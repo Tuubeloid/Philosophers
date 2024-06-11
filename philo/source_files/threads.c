@@ -6,7 +6,7 @@
 /*   By: tvalimak <Tvalimak@student.42.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 16:56:53 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/11 17:14:58 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/11 18:54:48 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ int	check_if_fed(t_rules *rules, int number_of_meals)
 		pthread_mutex_unlock(&rules->monitor);
 		i++;
 	}
+	pthread_mutex_lock(&rules->monitor);
 	rules->all_fed = 1;
 	return (1);
 }
