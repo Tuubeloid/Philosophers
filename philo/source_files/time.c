@@ -6,7 +6,7 @@
 /*   By: tvalimak <Tvalimak@student.42.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 14:37:33 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/11 19:22:18 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/11 19:53:27 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ long	get_current_time(void)
 	return ((current_time.tv_sec * 1000) + (current_time.tv_usec / 1000));
 }
 
-int	timer(int milliseconds, t_philo_data *philo, int status, int status_two)
+int	timer(int milliseconds, t_philo_data *philo, int status)
 {
 	long	start;
 	long	end;
@@ -29,7 +29,7 @@ int	timer(int milliseconds, t_philo_data *philo, int status, int status_two)
 	end = start + milliseconds;
 	while (get_current_time() < end)
 	{
-		if (death_monitor(philo, status, status_two) == 1)
+		if (death_monitor(philo, status) == 1)
 			break ;
 		usleep(500);
 	}
