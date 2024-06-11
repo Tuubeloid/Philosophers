@@ -6,7 +6,7 @@
 /*   By: tvalimak <Tvalimak@student.42.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 16:56:53 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/11 20:46:08 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/11 21:00:21 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ int	check_death(t_rules *rules)
 
 void	monitor_threads(t_rules *rules)
 {
+	printf("Simulation started\n");
 	while (1)
 	{
 		if (rules->number_of_meals != -1)
