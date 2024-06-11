@@ -6,7 +6,7 @@
 /*   By: tvalimak <Tvalimak@student.42.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/01 12:33:50 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/11 18:24:37 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/11 18:25:09 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,6 @@ void	thread_loop(t_philo_data *philo)
 void	*process_simulation(void *param)
 {
 	t_philo_data	*philo;
-	long			current_time;
 
 	philo = (t_philo_data *)param;
 	if (philo->left_fork == philo->right_fork)
