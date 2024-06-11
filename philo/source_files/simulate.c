@@ -6,7 +6,7 @@
 /*   By: tvalimak <Tvalimak@student.42.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/01 12:33:50 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/11 17:23:13 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/11 18:23:42 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,8 @@ int	status_handler(t_philo_data *philo, int status, int status_two)
 int	death_monitor(t_philo_data *philo, int status)
 {
 	long	current_time;
-	long	time_of_death;
 
 	current_time = get_current_time();
-	time_of_death = current_time - philo->time_since_start;
 	if (philo->rules->all_fed == 1)
 	{
 		pthread_mutex_lock(&philo->rules->write_lock);
@@ -116,7 +114,6 @@ void	*process_simulation(void *param)
 	long			current_time;
 
 	philo = (t_philo_data *)param;
-	current_time = get_current_time() - philo->time_since_start;
 	if (philo->left_fork == philo->right_fork)
 	{
 		write_with_thread(philo, "has taken a fork", 0, 0);
