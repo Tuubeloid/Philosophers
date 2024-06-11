@@ -6,7 +6,7 @@
 /*   By: tvalimak <Tvalimak@student.42.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 14:37:33 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/11 20:34:18 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/11 20:54:17 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,5 +34,7 @@ int	timer(int milliseconds, t_philo_data *philo, int status)
 		usleep(500);
 	}
 	usleep(500);
+	if (death_monitor(philo, status) == 1)
+		return (1);
 	return (0);
 }
