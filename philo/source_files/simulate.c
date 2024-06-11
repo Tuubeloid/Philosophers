@@ -6,7 +6,7 @@
 /*   By: tvalimak <Tvalimak@student.42.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/01 12:33:50 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/11 20:50:56 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/11 20:58:34 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ void	*process_simulation(void *param)
 		philo->rules->philo_died = 1;
 		return (NULL);
 	}
-	if (philo->philo_id % 2 == 0 || philo->philo_id == \
+	if (philo->philo_id % 2 == 0 || philo->philo_id + 1 == \
 	philo->rules->number_of_philosophers)
 		usleep(10000);
 	thread_loop(philo);
