@@ -6,7 +6,7 @@
 /*   By: tvalimak <Tvalimak@student.42.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/01 12:33:50 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/11 18:25:09 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/11 18:39:41 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,12 @@ int	death_monitor(t_philo_data *philo, int status)
 	long	current_time;
 
 	current_time = get_current_time();
+	pthread_mutex_lock(&philo->rules->monitor);
 	if (philo->rules->all_fed == 1)
 	{
 		pthread_mutex_lock(&philo->rules->write_lock);
 		return (status_handler(philo, status, 1));
 	}
-	pthread_mutex_lock(&philo->rules->monitor);
 	if (philo->rules->philo_died == 1)
 		return (status_handler(philo, status, 3));
 	pthread_mutex_unlock(&philo->rules->monitor);
