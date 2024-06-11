@@ -6,7 +6,7 @@
 /*   By: tvalimak <Tvalimak@student.42.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 16:56:53 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/11 18:59:28 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/11 19:06:54 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ void	join_threads(t_rules *rules)
 			error(rules, "Error: Thread join failed");
 		i++;
 	}
-	destroy_mutexes(rules);
 }
 
 void	spawn_threads(t_rules *rules)
@@ -104,4 +103,7 @@ void	monitor_threads(t_rules *rules)
 			break ;
 	}
 	join_threads(rules);
+	pthread_mutex_unlock(&rules->write_lock);
+	pthread_mutex_unlock(&rules->monitor);
+	destroy_mutexes(rules);
 }
