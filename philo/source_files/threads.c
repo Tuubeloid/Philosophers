@@ -6,7 +6,7 @@
 /*   By: tvalimak <Tvalimak@student.42.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 16:56:53 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/11 20:24:19 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/11 20:43:39 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,11 +100,7 @@ void	monitor_threads(t_rules *rules)
 			if (check_if_fed(rules, rules->number_of_meals) == 1)
 				break ;
 		if (check_death(rules) == 1)
-		{
-			usleep(10000);
-			pthread_mutex_unlock(&rules->write_lock);
 			break ;
-		}
 	}
 	join_threads(rules);
 	usleep(1000000);
