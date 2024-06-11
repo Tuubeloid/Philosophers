@@ -6,7 +6,7 @@
 /*   By: tvalimak <Tvalimak@student.42.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 16:56:53 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/11 18:54:48 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/11 18:59:28 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ int	check_death(t_rules *rules)
 			time_of_death = current_time - \
 			rules->philo_data[i].time_since_start;
 			rules->philo_died = 1;
+			pthread_mutex_lock(&rules->write_lock);
 			printf("%ld %d %s\n", time_of_death, i + 1, "died");
 			pthread_mutex_unlock(&rules->monitor);
 			return (1);
