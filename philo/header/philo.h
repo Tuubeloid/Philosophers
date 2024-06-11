@@ -6,7 +6,7 @@
 /*   By: tvalimak <Tvalimak@student.42.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 00:36:15 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/09 20:12:03 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/11 19:24:56 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,8 +94,9 @@ void	destroy_mutexes(t_rules *rules);
 /* ************************************************************************** */
 
 long	get_current_time(void);
-int		timer(int milliseconds, t_philo_data *philo, int status);
+int		timer(int milliseconds, t_philo_data *philo, \
+		int status, int status_two);
 
-int		death_monitor(t_philo_data *philo, int status);
+int		death_monitor(t_philo_data *philo, int status, int status_two);
 
 #endif
