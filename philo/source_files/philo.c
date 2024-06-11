@@ -6,7 +6,7 @@
 /*   By: tvalimak <Tvalimak@student.42.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 21:41:07 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/09 16:39:11 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/11 18:20:49 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,9 +71,6 @@ int	check_if_empty(char **argv, int argc)
 
 int	check_args(int argv_int[5], char **argv, int argc)
 {
-	int	i;
-
-	i = 0;
 	argv_int[4] = -1;
 	if (check_if_empty(argv, argc) == 1)
 		return (1);
