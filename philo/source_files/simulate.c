@@ -6,7 +6,7 @@
 /*   By: tvalimak <Tvalimak@student.42.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/01 12:33:50 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/11 20:30:07 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/11 20:35:45 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,8 @@ int	write_with_thread(t_philo_data *philo, char *message, int status, int eat)
 	pthread_mutex_lock(&philo->rules->write_lock);
 	if (eat == 1 && philo->rules->number_of_meals != -1)
 		philo->meals_eaten++;
-	printf("%ld %d %s\n", current_time, philo->philo_id + 1, message);
+	printf("%ld %d %s\n", current_time - philo->time_since_start, \
+	philo->philo_id + 1, message);
 	pthread_mutex_unlock(&philo->rules->monitor);
 	pthread_mutex_unlock(&philo->rules->write_lock);
 	if (death_monitor(philo, status) == 1)
