@@ -6,7 +6,7 @@
 /*   By: tvalimak <Tvalimak@student.42.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/01 12:33:50 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/11 18:23:42 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/11 18:24:37 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,6 @@ void	*process_simulation(void *param)
 	{
 		write_with_thread(philo, "has taken a fork", 0, 0);
 		timer(philo->rules->time_to_die, philo, 0);
-		current_time = get_current_time() - philo->time_since_start;
 		philo->rules->philo_died = 1;
 		return (NULL);
 	}
