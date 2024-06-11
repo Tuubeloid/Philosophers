@@ -6,7 +6,7 @@
 /*   By: tvalimak <Tvalimak@student.42.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 16:56:53 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/11 20:15:49 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/11 20:24:19 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,6 @@ void	monitor_threads(t_rules *rules)
 		}
 	}
 	join_threads(rules);
-	usleep(10000);
+	usleep(1000000);
 	destroy_mutexes(rules);
 }
