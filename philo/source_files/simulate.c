@@ -6,7 +6,7 @@
 /*   By: tvalimak <Tvalimak@student.42.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/01 12:33:50 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/11 20:06:14 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/11 20:30:07 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,12 +77,14 @@ void	thread_loop(t_philo_data *philo)
 			break ;
 		if (write_with_thread(philo, "is eating", 2, 1) == 1)
 			break ;
-		timer(philo->rules->time_to_eat, philo, 2);
+		if (timer(philo->rules->time_to_eat, philo, 2) == 1)
+			break ;
 		pthread_mutex_unlock(&philo->rules->fork_id[philo->left_fork]);
 		pthread_mutex_unlock(&philo->rules->fork_id[philo->right_fork]);
 		if (write_with_thread(philo, "is sleeping", 0, 0) == 1)
 			break ;
-		timer(philo->rules->time_to_sleep, philo, 0);
+		if (timer(philo->rules->time_to_sleep, philo, 0) == 1)
+			break ;
 		if (write_with_thread(philo, "is thinking", 0, 0) == 1)
 			break ;
 	}

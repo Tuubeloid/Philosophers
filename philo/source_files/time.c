@@ -6,7 +6,7 @@
 /*   By: tvalimak <Tvalimak@student.42.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 14:37:33 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/11 19:53:27 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/11 20:29:13 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	timer(int milliseconds, t_philo_data *philo, int status)
 	while (get_current_time() < end)
 	{
 		if (death_monitor(philo, status) == 1)
-			break ;
+			return (1);
 		usleep(500);
 	}
 	usleep(500);
