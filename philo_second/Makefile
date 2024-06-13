@@ -6,12 +6,12 @@
 #    By: tvalimak <tvalimak@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/27 11:09:42 by tvalimak          #+#    #+#              #
-#    Updated: 2024/06/13 17:59:52 by tvalimak         ###   ########.fr        #
+#    Updated: 2024/06/13 17:15:43 by tvalimak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
-CC = cc
+CC = gcc
 CFLAGS = -Wall -Wextra -Werror -g
 SANITIZE = -fsanitize=thread
 SRCDIR = source_files
@@ -36,7 +36,7 @@ OBJS = $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 all: $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT) $(GNL)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -o $(NAME) $(RLFLAGS)
 
 $(LIBFT):
 	@$(MAKE) -C $(LIBFTDIR)
@@ -52,7 +52,7 @@ debug: CFLAGS += -g -fsanitize=address
 debug: re
 
 sanitize : $(OBJS) $(LIBFT) $(GNL)
-	$(CC) $(CFLAGS) $(SANITIZE) $(OBJS) $(LIBFT) $(GNL) -o $(NAME)
+	$(CC) $(CFLAGS) $(SANITIZE) $(OBJS) $(LIBFT) $(GNL) -o $(NAME) $(RLFLAGS)
 
 clean:
 	make fclean -C $(LIBFTDIR)
