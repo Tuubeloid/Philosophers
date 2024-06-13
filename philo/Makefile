@@ -3,16 +3,16 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: tvalimak <Tvalimak@student.42.fi>          +#+  +:+       +#+         #
+#    By: tvalimak <tvalimak@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/27 11:09:42 by tvalimak          #+#    #+#              #
-#    Updated: 2024/06/11 18:32:02 by tvalimak         ###   ########.fr        #
+#    Updated: 2024/06/13 13:59:55 by tvalimak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -g -O0 -Wall -Wextra -Werror -pthread
 SANITIZE = -fsanitize=thread -static-libsan
 SRCDIR = source_files
 OBJDIR = object_files

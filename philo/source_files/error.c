@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tvalimak <Tvalimak@student.42.fi>          +#+  +:+       +#+        */
+/*   By: tvalimak <tvalimak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 00:40:28 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/09 16:38:24 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/13 13:31:04 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	error(t_rules *rules, char *message)
 	while (i <= rules->threads_running)
 	{
 		if (pthread_mutex_destroy(&rules->fork_id[i]) != 0)
-			error(rules, "Error: Mutex destroy failed");
+			printf("Error: Mutex destroy failed\n");
 		i++;
 	}
 	exit(1);
