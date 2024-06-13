@@ -6,7 +6,7 @@
 /*   By: tvalimak <tvalimak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 14:37:33 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/13 16:53:57 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/14 01:06:07 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,13 @@ int	timer(int milliseconds, t_philo_data *philo, int status)
 	long	start;
 	long	end;
 
+	(void)philo;
+	(void)status;
 	start = get_current_time();
 	end = start + milliseconds;
 	while (get_current_time() < end)
 	{
-		usleep(500);
+		usleep(300);
 	}
-	usleep(500);
-	if (death_monitor(philo, status) == 1)
-		return (1);
 	return (0);
 }

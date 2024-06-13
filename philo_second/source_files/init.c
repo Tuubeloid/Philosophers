@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tvalimak <Tvalimak@student.42.fi>          +#+  +:+       +#+        */
+/*   By: tvalimak <tvalimak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 00:42:57 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/09 17:54:35 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/14 01:14:01 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,14 @@ void	init_mutexes(t_rules *rules)
 	{
 		if (pthread_mutex_init(&(rules->fork_id[i]), NULL) != 0)
 			error(rules, "Error: Mutex init failed");
+		rules->fork_taken[i] = 0;
 		i++;
 	}
 	if (pthread_mutex_init(&rules->monitor, NULL) != 0)
 		error(rules, "Error: Mutex init failed");
 	if (pthread_mutex_init(&rules->write_lock, NULL) != 0)
+		error(rules, "Error: Mutex init failed");
+	if (pthread_mutex_init(&rules->meal_lock, NULL) != 0)
 		error(rules, "Error: Mutex init failed");
 }
 

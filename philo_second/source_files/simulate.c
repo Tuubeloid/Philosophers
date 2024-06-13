@@ -6,7 +6,7 @@
 /*   By: tvalimak <tvalimak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/01 12:33:50 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/13 16:58:37 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/14 01:56:36 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ int	status_handler(t_philo_data *philo, int status)
 		pthread_mutex_unlock(&philo->rules->fork_id[philo->left_fork]);
 		pthread_mutex_unlock(&philo->rules->fork_id[philo->right_fork]);
 	}
-	pthread_mutex_unlock(&philo->rules->monitor);
 	return (1);
 }
 
@@ -56,31 +55,43 @@ int	write_with_thread(t_philo_data *philo, char *message, int status, int eat)
 	printf("%ld %d %s\n", (current_time - philo->time_since_start), \
 	philo->philo_id + 1, message);
 	pthread_mutex_unlock(&philo->rules->write_lock);
-	if (death_monitor(philo, status) == 1)
-		return (1);
 	return (0);
+}
+void	meal_refresh(t_philo_data *philo)
+{
+	pthread_mutex_lock(&philo->rules->meal_lock);
+	philo->time_since_last_meal = get_current_time();
+	pthread_mutex_unlock(&philo->rules->meal_lock);
 }
 
 void	thread_loop(t_philo_data *philo)
 {
 	while (1)
 	{
-		if (death_monitor(philo, 0) == 1)
-			break ;
+		while (philo->rules->fork_taken[philo->left_fork] == 1)
+			usleep(300);
+		philo->rules->fork_taken[philo->left_fork] = 1;
 		pthread_mutex_lock(&philo->rules->fork_id[philo->left_fork]);
 		if (write_with_thread(philo, "has taken a fork", 1, 0) == 1)
 			break ;
+		while (philo->rules->fork_taken[philo->right_fork] == 1)
+			usleep(300);
+		philo->rules->fork_taken[philo->right_fork] = 1;
 		pthread_mutex_lock(&philo->rules->fork_id[philo->right_fork]);
-		if (write_with_thread(philo, "has taken a fork", 2, 1) == 1)
+		pthread_mutex_lock(&philo->rules->meal_lock);
+		if (write_with_thread(philo, "has taken a fork", 2, 0) == 1)
 			break ;
-		if (write_with_thread(philo, "is eating", 2, 0) == 1)
+		if (write_with_thread(philo, "is eating", 2, 1) == 1)
 			break ;
+		pthread_mutex_unlock(&philo->rules->meal_lock);
+		philo->meals_eaten++;
 		if (timer(philo->rules->time_to_eat, philo, 2) == 1)
 			break ;
-		philo->meals_eaten++;
 		pthread_mutex_unlock(&philo->rules->fork_id[philo->left_fork]);
+		philo->rules->fork_taken[philo->left_fork] = 0;
 		pthread_mutex_unlock(&philo->rules->fork_id[philo->right_fork]);
-		if (write_with_thread(philo, "is sleeping", 0, 1) == 1)
+		philo->rules->fork_taken[philo->right_fork] = 0;
+		if (write_with_thread(philo, "is sleeping", 0, 0) == 1)
 			break ;
 		if (timer(philo->rules->time_to_sleep, philo, 0) == 1)
 			break ;
@@ -94,17 +105,17 @@ void	*process_simulation(void *param)
 	t_philo_data	*philo;
 
 	philo = (t_philo_data *)param;
-	printf("Thread created for philosopher %d\n", philo->philo_id + 1);
+	meal_refresh(philo);
 	if (philo->left_fork == philo->right_fork)
 	{
 		write_with_thread(philo, "has taken a fork", 0, 0);
 		timer(philo->rules->time_to_die, philo, 0);
-		philo->rules->philo_died = 1;
+		while (philo->rules->philo_died == 0)
+			usleep(300);
 		return (NULL);
 	}
-	if (philo->philo_id % 2 == 0 || philo->philo_id + 1 == \
-	philo->rules->number_of_philosophers)
-		usleep(10000);
+	if (philo->philo_id % 2 == 0)
+		timer(philo->rules->time_to_eat, philo, 2);
 	thread_loop(philo);
 	return (NULL);
 }

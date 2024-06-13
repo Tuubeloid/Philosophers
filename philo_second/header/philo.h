@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tvalimak <Tvalimak@student.42.fi>          +#+  +:+       +#+        */
+/*   By: tvalimak <tvalimak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 00:36:15 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/11 19:57:17 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/14 01:13:46 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,16 @@ typedef struct s_rules
 	int					time_to_sleep;
 	int					philo_died;
 	int					all_fed;
+	long				clock_rate;
 	int					threads_running;
 	int					number_of_meals;
 	int					total_deaths;
 	long				start_time;
 	pthread_mutex_t		monitor;
 	pthread_mutex_t		write_lock;
+	pthread_mutex_t		meal_lock;
 	pthread_mutex_t		fork_id[200];
+	int					fork_taken[200];
 	t_philo_data		philo_data[200];
 	pthread_t			thread_id[200];
 }				t_rules;
@@ -86,7 +89,7 @@ long	get_current_time(void);
 
 void	spawn_threads(t_rules *rules);
 void	join_threads(t_rules *rules);
-void	monitor_threads(t_rules *rules);
+void	*monitor_threads(void *param);
 void	destroy_mutexes(t_rules *rules);
 
 /* ************************************************************************** */

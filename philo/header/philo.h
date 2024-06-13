@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tvalimak <Tvalimak@student.42.fi>          +#+  +:+       +#+        */
+/*   By: tvalimak <tvalimak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 00:36:15 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/11 19:57:17 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/13 22:49:38 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ typedef struct s_rules
 	pthread_mutex_t		fork_id[200];
 	t_philo_data		philo_data[200];
 	pthread_t			thread_id[200];
+	pthread_t			monitor_thread;
 }				t_rules;
 
 /* ************************************************************************** */
@@ -78,6 +79,7 @@ void	init_vars(t_rules *rules);
 /* ************************************************************************** */
 
 void	*process_simulation(void *param);
+void	*monitor_threads(void *param);
 long	get_current_time(void);
 
 /* ************************************************************************** */
@@ -86,7 +88,6 @@ long	get_current_time(void);
 
 void	spawn_threads(t_rules *rules);
 void	join_threads(t_rules *rules);
-void	monitor_threads(t_rules *rules);
 void	destroy_mutexes(t_rules *rules);
 
 /* ************************************************************************** */
@@ -94,8 +95,8 @@ void	destroy_mutexes(t_rules *rules);
 /* ************************************************************************** */
 
 long	get_current_time(void);
-int		timer(int milliseconds, t_philo_data *philo, int status);
+int 	timer(int milliseconds, t_philo_data *philo, int status, int first_fork, int second_fork);
 
-int		death_monitor(t_philo_data *philo, int status);
+int     death_monitor(t_philo_data *philo, int status, int first_fork, int second_fork);
 
 #endif
