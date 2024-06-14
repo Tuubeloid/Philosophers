@@ -6,7 +6,7 @@
 /*   By: tvalimak <tvalimak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 16:56:53 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/14 01:47:03 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/15 02:18:45 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	spawn_threads(t_rules *rules)
 		printf("Error: Thread creation failed\n");
 		thread_fail_handler(rules, i);
 	}
-	while (i < rules->number_of_philosophers && rules->philo_died == 0)
+	while (i < rules->philo_count && rules->philo_died == 0)
 	{
 		if (pthread_create(&rules->thread_id[i], NULL,
 				process_simulation, &rules->philo_data[i]) != 0)
@@ -57,7 +57,7 @@ void	spawn_threads(t_rules *rules)
 	}
 	if (pthread_join(rules->thread_id[i], NULL) != 0)
 		error(rules, "Error: Thread join failed");
-	while (i < rules->number_of_philosophers)
+	while (i < rules->philo_count)
 	{
 		if (pthread_join(rules->thread_id[i], NULL) != 0)
 			error(rules, "Error: Thread join failed");
@@ -71,7 +71,7 @@ int	check_if_fed(t_rules *rules, int number_of_meals)
 	int	i;
 
 	i = 0;
-	while (i < rules->number_of_philosophers)
+	while (i < rules->philo_count)
 	{
 		pthread_mutex_lock(&rules->monitor);
 		if (rules->philo_data[i].meals_eaten < number_of_meals)
@@ -94,7 +94,7 @@ int	check_death(t_rules *rules)
 	long	time_of_death;
 
 	i = 0;
-	while (i < rules->number_of_philosophers)
+	while (i < rules->philo_count)
 	{
 		pthread_mutex_lock(&rules->monitor);
 		if (rules->philo_data[i].time_since_last_meal + rules->time_to_die
@@ -125,7 +125,7 @@ void	*monitor_threads(void *param)
 	while (1)
 	{
 		i = 0;
-		while (i < rules->number_of_philosophers)
+		while (i < rules->philo_count)
 		{
 			pthread_mutex_lock(&rules->meal_lock);
 			pthread_mutex_lock(&rules->monitor);

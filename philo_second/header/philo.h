@@ -6,7 +6,7 @@
 /*   By: tvalimak <tvalimak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 00:36:15 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/14 01:13:46 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/15 02:35:37 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,14 @@ typedef struct s_philo_data
 	long			time_since_start;
 	pthread_mutex_t	*monitor;
 	pthread_mutex_t	*write_lock;
+	pthread_mutex_t	*meal_lock;
 	t_rules			*rules;
 }				t_philo_data;
 
 typedef struct s_rules
 {
-	int					number_of_philosophers;
+	int					odd_sync;
+	int					philo_count;
 	int					time_to_die;
 	int					time_to_eat;
 	int					time_to_sleep;
@@ -47,6 +49,7 @@ typedef struct s_rules
 	int					total_deaths;
 	long				start_time;
 	pthread_mutex_t		monitor;
+	pthread_mutex_t		fork_lock;
 	pthread_mutex_t		write_lock;
 	pthread_mutex_t		meal_lock;
 	pthread_mutex_t		fork_id[200];
@@ -97,7 +100,7 @@ void	destroy_mutexes(t_rules *rules);
 /* ************************************************************************** */
 
 long	get_current_time(void);
-int		timer(int milliseconds, t_philo_data *philo, int status);
+int		timer(int milliseconds);
 
 int		death_monitor(t_philo_data *philo, int status);
 

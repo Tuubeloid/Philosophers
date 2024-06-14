@@ -6,7 +6,7 @@
 /*   By: tvalimak <tvalimak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 00:42:57 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/14 01:14:01 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/15 02:19:10 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	init_mutexes(t_rules *rules)
 	int	i;
 
 	i = 0;
-	while (i < rules->number_of_philosophers)
+	while (i < rules->philo_count)
 	{
 		if (pthread_mutex_init(&(rules->fork_id[i]), NULL) != 0)
 			error(rules, "Error: Mutex init failed");
@@ -39,12 +39,12 @@ void	init_philosophers(t_rules *rules)
 
 	i = 0;
 	time = get_current_time();
-	while (i < rules->number_of_philosophers)
+	while (i < rules->philo_count)
 	{
 		ft_memset(&rules->philo_data[i], 0, sizeof(t_philo_data));
 		rules->philo_data[i].philo_id = i;
 		rules->philo_data[i].right_fork = i;
-		if (i < rules->number_of_philosophers - 1)
+		if (i < rules->philo_count - 1)
 			rules->philo_data[i].left_fork = i + 1;
 		else
 			rules->philo_data[i].left_fork = 0;
