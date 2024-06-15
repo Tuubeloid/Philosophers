@@ -6,7 +6,7 @@
 /*   By: tvalimak <tvalimak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 00:36:15 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/15 02:35:37 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/15 10:45:57 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,11 @@ typedef struct s_rules	t_rules;
 typedef struct s_philo_data
 {
 	int				philo_id;
+	int				has_forks;
 	int				right_fork;
+	int				has_right;
 	int				left_fork;
+	int				has_left;
 	int				meals_eaten;
 	long			time_since_last_meal;
 	long			time_since_start;
@@ -100,8 +103,11 @@ void	destroy_mutexes(t_rules *rules);
 /* ************************************************************************** */
 
 long	get_current_time(void);
-int		timer(int milliseconds);
+int		timer(int milliseconds, t_philo_data *philo);
 
-int		death_monitor(t_philo_data *philo, int status);
+int		check_death(t_rules *rules);
+
+int		mutexlock(t_philo_data *philo, pthread_mutex_t *mutex);
+int		mutexunlock(t_philo_data *philo, pthread_mutex_t *mutex);
 
 #endif

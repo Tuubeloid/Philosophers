@@ -71,4 +71,6 @@ void	init_vars(t_rules *rules)
 	init_mutexes(rules);
 	init_time(rules);
 	init_philosophers(rules);
+	if (rules->philo_count % 2 == 1)
+		rules->odd_sync = 1;
 }

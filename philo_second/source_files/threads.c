@@ -6,7 +6,7 @@
 /*   By: tvalimak <tvalimak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 16:56:53 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/15 02:18:45 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/15 10:04:48 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,14 @@ void	spawn_threads(t_rules *rules)
 		rules->threads_running++;
 		i++;
 	}
-	while (rules->philo_died == 0)
+	while (1)
 	{
+		mutexlock(NULL, &rules->meal_lock);
 		if (rules->all_fed == 1)
 			break ;
 		if (rules->philo_died == 1)
 			break ;
+		mutexunlock(NULL, &rules->meal_lock);
 	}
 	if (pthread_join(rules->thread_id[i], NULL) != 0)
 		error(rules, "Error: Thread join failed");

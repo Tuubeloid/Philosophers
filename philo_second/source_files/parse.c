@@ -14,7 +14,7 @@
 
 void	parse_args(t_rules *rules, char **argv)
 {
-	rules->number_of_philosophers = ft_atoi(argv[1]);
+	rules->philo_count = ft_atoi(argv[1]);
 	rules->time_to_die = ft_atoi(argv[2]);
 	rules->time_to_eat = ft_atoi(argv[3]);
 	rules->time_to_sleep = ft_atoi(argv[4]);
