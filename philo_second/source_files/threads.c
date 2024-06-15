@@ -6,7 +6,7 @@
 /*   By: tvalimak <tvalimak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 16:56:53 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/15 10:04:48 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/15 16:57:34 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ void	join_threads(t_rules *rules)
 	int	i;
 
 	i = 0;
+	printf("joining threads\n");
 	while (i < rules->threads_running)
 	{
 		if (pthread_join(rules->thread_id[i], NULL) != 0)
@@ -30,14 +31,7 @@ void	spawn_threads(t_rules *rules)
 	int	i;
 
 	i = 0;
-	printf("Spawning threads\n");
-	if (pthread_create(&rules->thread_id[i], NULL,
-			monitor_threads, rules) != 0)
-	{
-		printf("Error: Thread creation failed\n");
-		thread_fail_handler(rules, i);
-	}
-	while (i < rules->philo_count && rules->philo_died == 0)
+	while (i < rules->philo_count)
 	{
 		if (pthread_create(&rules->thread_id[i], NULL,
 				process_simulation, &rules->philo_data[i]) != 0)
@@ -48,24 +42,6 @@ void	spawn_threads(t_rules *rules)
 		rules->threads_running++;
 		i++;
 	}
-	while (1)
-	{
-		mutexlock(NULL, &rules->meal_lock);
-		if (rules->all_fed == 1)
-			break ;
-		if (rules->philo_died == 1)
-			break ;
-		mutexunlock(NULL, &rules->meal_lock);
-	}
-	if (pthread_join(rules->thread_id[i], NULL) != 0)
-		error(rules, "Error: Thread join failed");
-	while (i < rules->philo_count)
-	{
-		if (pthread_join(rules->thread_id[i], NULL) != 0)
-			error(rules, "Error: Thread join failed");
-		i++;
-	}
-	destroy_mutexes(rules);
 }
 
 int	check_if_fed(t_rules *rules, int number_of_meals)
@@ -75,49 +51,20 @@ int	check_if_fed(t_rules *rules, int number_of_meals)
 	i = 0;
 	while (i < rules->philo_count)
 	{
-		pthread_mutex_lock(&rules->monitor);
+		pthread_mutex_lock(&rules->meal_lock);
 		if (rules->philo_data[i].meals_eaten < number_of_meals)
 		{
-			pthread_mutex_unlock(&rules->monitor);
+			pthread_mutex_unlock(&rules->meal_lock);
 			return (0);
 		}
-		pthread_mutex_unlock(&rules->monitor);
+		pthread_mutex_unlock(&rules->meal_lock);
 		i++;
 	}
-	pthread_mutex_lock(&rules->write_lock);
 	rules->all_fed = 1;
 	return (1);
 }
-/*
-int	check_death(t_rules *rules)
-{
-	int		i;
-	long	current_time;
-	long	time_of_death;
 
-	i = 0;
-	while (i < rules->philo_count)
-	{
-		pthread_mutex_lock(&rules->monitor);
-		if (rules->philo_data[i].time_since_last_meal + rules->time_to_die
-			< get_current_time())
-		{
-			rules->philo_died = 1;
-			pthread_mutex_lock(&rules->write_lock);
-			current_time = get_current_time();
-			time_of_death = current_time - \
-			rules->philo_data[i].time_since_start;
-			printf("%ld %d %s\n", time_of_death, i + 1, "died");
-			pthread_mutex_unlock(&rules->monitor);
-			return (1);
-		}
-		pthread_mutex_unlock(&rules->monitor);
-		i++;
-	}
-	return (0);
-}*/
-
-void	*monitor_threads(void *param)
+void	monitor_threads(void *param)
 {
 	t_rules	*rules;
 	int		i;
@@ -126,35 +73,53 @@ void	*monitor_threads(void *param)
 	rules = (t_rules *)param;
 	while (1)
 	{
+		pthread_mutex_lock(&rules->monitor);
+		if (rules->philo_died == 1)
+		{
+			pthread_mutex_unlock(&rules->monitor);
+			break ;
+		}
+		pthread_mutex_unlock(&rules->monitor);
 		i = 0;
 		while (i < rules->philo_count)
 		{
 			pthread_mutex_lock(&rules->meal_lock);
 			pthread_mutex_lock(&rules->monitor);
+			if (rules->philo_died == 1)
+			{
+				pthread_mutex_unlock(&rules->meal_lock);
+				pthread_mutex_unlock(&rules->monitor);
+				break ;
+			}
 			if (rules->philo_data[i].time_since_last_meal + rules->time_to_die
 				< get_current_time())
 			{
 				rules->philo_died = 1;
-				pthread_mutex_unlock(&rules->monitor);
-				pthread_mutex_lock(&rules->write_lock);
-				printf("%ld %d %s\n", get_current_time() - \
-				rules->philo_data[i].time_since_start, i + 1, "died");
+				write_with_thread(&rules->philo_data[i], "died 3");
+				lay_forks(&rules->philo_data[i]);
 				pthread_mutex_unlock(&rules->meal_lock);
-				return (NULL);
+				pthread_mutex_unlock(&rules->monitor);
+				break ;
 			}
 			pthread_mutex_unlock(&rules->meal_lock);
 			pthread_mutex_unlock(&rules->monitor);
 			i++;
 		}
-		if (rules->all_fed == 1)
+		if (rules->number_of_meals != -1)
 		{
-			pthread_mutex_lock(&rules->meal_lock);
-			pthread_mutex_lock(&rules->write_lock);
-			printf("All philosophers have eaten %d meals\n", \
-			rules->number_of_meals);
-			pthread_mutex_unlock(&rules->meal_lock);
-			pthread_mutex_unlock(&rules->write_lock);
-			return (NULL);
+			if (check_if_fed(rules, rules->number_of_meals))
+			{
+				pthread_mutex_lock(&rules->meal_lock);
+				pthread_mutex_lock(&rules->write_lock);
+				printf("All philosophers have eaten %d meals\n", \
+				rules->number_of_meals);
+				pthread_mutex_unlock(&rules->meal_lock);
+				pthread_mutex_unlock(&rules->write_lock);
+			}
 		}
 	}
+	while(rules->threads_running)
+		usleep(100);
+	join_threads(rules);
+	printf("end of monitoring");
 }

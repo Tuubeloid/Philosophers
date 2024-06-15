@@ -6,7 +6,7 @@
 /*   By: tvalimak <tvalimak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 00:36:15 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/15 10:45:57 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/15 16:20:43 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ long	get_current_time(void);
 
 void	spawn_threads(t_rules *rules);
 void	join_threads(t_rules *rules);
-void	*monitor_threads(void *param);
+void	monitor_threads(void *param);
 void	destroy_mutexes(t_rules *rules);
 
 /* ************************************************************************** */
@@ -109,5 +109,9 @@ int		check_death(t_rules *rules);
 
 int		mutexlock(t_philo_data *philo, pthread_mutex_t *mutex);
 int		mutexunlock(t_philo_data *philo, pthread_mutex_t *mutex);
+
+void	write_with_thread(t_philo_data *philo, char *message);
+
+void	lay_forks(t_philo_data *philo);
 
 #endif

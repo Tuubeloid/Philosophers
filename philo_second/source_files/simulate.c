@@ -6,7 +6,7 @@
 /*   By: tvalimak <tvalimak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/01 12:33:50 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/15 10:48:40 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/15 16:54:35 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,9 @@ int	check_death(t_rules *rules)
 			{
 				rules->philo_died = 1;
 				mutexunlock(&rules->philo_data[i], &rules->monitor);
-				write_with_thread(&rules->philo_data[i], "died");
+				return (1);
 			}
+			mutexunlock(&rules->philo_data[i], &rules->monitor);
 			return (1);
 		}
 		mutexunlock(&rules->philo_data[i], &rules->meal_lock);
@@ -162,7 +163,7 @@ int take_forks(t_philo_data *philo)
 	rules = philo->rules;
 	if (rules->odd_sync == 1)
 	{
-		if (!forks_taken(philo)) // we might want to change this to smell for a gap when all forks are availab
+		if (!forks_taken(philo))
 		{
 			while (!check_death(philo->rules))
 			{
@@ -172,7 +173,9 @@ int take_forks(t_philo_data *philo)
 			}
 		}
 	}
-	return (even_forks(philo));
+	if (!check_death(philo->rules))
+		return (even_forks(philo));
+	return (0);
 }
 
 int	wait_forks(t_philo_data *philo)
@@ -189,9 +192,7 @@ int	wait_forks(t_philo_data *philo)
 			break ;
 		usleep(300);
 	}
-	if (check_death(philo->rules))
-		return (1);
-	return (0);
+	return (check_death(philo->rules));
 }
 
 int	eat_loop(t_philo_data *philo)
@@ -205,13 +206,9 @@ int	eat_loop(t_philo_data *philo)
 	meal_refresh(philo);
 	write_with_thread(philo, "is eating");
 	if (timer(philo->rules->time_to_eat, philo))
-	{
-		write_with_thread(philo, "died");
 		return (1);
-	}
 	return (0);
 }
-
 
 void	*process_simulation(void *param)
 {
@@ -223,7 +220,7 @@ void	*process_simulation(void *param)
 	{
 		write_with_thread(philo, "is thinking");
 		if (timer(philo->rules->time_to_eat - 5, philo))
-			write_with_thread(philo, "died");
+			write_with_thread(philo, "died 1");
 	}
 	while (!check_death(philo->rules))
 	{
@@ -232,8 +229,11 @@ void	*process_simulation(void *param)
 		write_with_thread(philo, "is sleeping");
 		lay_forks(philo);
 		if (timer(philo->rules->time_to_sleep, philo))
-			write_with_thread(philo, "died");
+			break ;
 		write_with_thread(philo, "is thinking");
 	}
+	lay_forks(philo);
+	philo->rules->threads_running--;
+	printf("End for philo %d\n", philo->philo_id);
 	return (NULL);
 }

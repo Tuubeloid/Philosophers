@@ -6,7 +6,7 @@
 /*   By: tvalimak <tvalimak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 21:41:07 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/13 23:36:57 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/15 16:09:46 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,7 @@ int	main(int argc, char **argv)
 	parse_args(rules, argv);
 	init_vars(rules);
 	spawn_threads(rules);
+	monitor_threads(rules);
 	printf("Simulation end\n");
 	return (0);
 }
