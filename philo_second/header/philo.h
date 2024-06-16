@@ -6,7 +6,7 @@
 /*   By: tvalimak <tvalimak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 00:36:15 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/15 16:20:43 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/16 16:51:49 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ typedef struct s_rules
 	int					threads_running;
 	int					number_of_meals;
 	int					total_deaths;
+	int					write_lock_locked;
 	long				start_time;
 	pthread_mutex_t		monitor;
 	pthread_mutex_t		fork_lock;

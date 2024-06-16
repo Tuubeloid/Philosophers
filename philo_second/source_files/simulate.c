@@ -6,7 +6,7 @@
 /*   By: tvalimak <tvalimak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/01 12:33:50 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/15 16:54:35 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/16 16:54:05 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,19 @@ void	write_with_thread(t_philo_data *philo, char *message)
 
 	current_time = get_current_time();
 	mutexlock(philo, &philo->rules->write_lock);
+	if (philo->rules->write_lock_locked == 1)
+	{
+		mutexunlock(philo, &philo->rules->write_lock);
+		return ;
+	}
 	printf("%ld %d %s\n", (current_time - philo->time_since_start), \
 	philo->philo_id + 1, message);
+	if (ft_strncmp(message, "died 3", ft_strlen(message)) == 0)
+	{
+		philo->rules->write_lock_locked = 1;
+		mutexunlock(philo, &philo->rules->write_lock);
+		return ;
+	}
 	mutexunlock(philo, &philo->rules->write_lock);
 }
 int	check_death(t_rules *rules)

@@ -6,7 +6,7 @@
 /*   By: tvalimak <tvalimak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 16:56:53 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/15 16:57:34 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/16 16:54:38 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,8 +94,8 @@ void	monitor_threads(void *param)
 			if (rules->philo_data[i].time_since_last_meal + rules->time_to_die
 				< get_current_time())
 			{
+				write_with_thread(&rules->philo_data[i], "died");
 				rules->philo_died = 1;
-				write_with_thread(&rules->philo_data[i], "died 3");
 				lay_forks(&rules->philo_data[i]);
 				pthread_mutex_unlock(&rules->meal_lock);
 				pthread_mutex_unlock(&rules->monitor);
@@ -120,6 +120,7 @@ void	monitor_threads(void *param)
 	}
 	while(rules->threads_running)
 		usleep(100);
+	
 	join_threads(rules);
 	printf("end of monitoring");
 }
