@@ -6,7 +6,7 @@
 /*   By: tvalimak <tvalimak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/01 12:33:50 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/16 18:53:08 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/17 00:35:55 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,22 +72,13 @@ int	check_death(t_rules *rules)
 	i = 0;
 	while (i < rules->philo_count)
 	{
-		mutexlock(&rules->philo_data[i], &rules->meal_lock);
-		if (get_current_time() - rules->philo_data[i].time_since_last_meal \
-		> rules->time_to_die)
+		pthread_mutex_lock(&rules->monitor);
+		if (rules->philo_died == 1)
 		{
-			mutexunlock(&rules->philo_data[i], &rules->meal_lock);
-			mutexlock(&rules->philo_data[i], &rules->monitor);
-			if (rules->philo_died == 0)
-			{
-				rules->philo_died = 1;
-				mutexunlock(&rules->philo_data[i], &rules->monitor);
-				return (1);
-			}
-			mutexunlock(&rules->philo_data[i], &rules->monitor);
+			pthread_mutex_unlock(&rules->monitor);
 			return (1);
 		}
-		mutexunlock(&rules->philo_data[i], &rules->meal_lock);
+		pthread_mutex_unlock(&rules->monitor);
 		i++;
 	}
 	return (0);
@@ -203,7 +194,7 @@ int	wait_forks(t_philo_data *philo)
 	{
 		if (take_forks(philo))
 			break ;
-		usleep(300);
+		usleep(100);
 	}
 	return (check_death(philo->rules));
 }
@@ -220,8 +211,8 @@ int	eat_loop(t_philo_data *philo)
 		lay_forks(philo);
 		return (1);
 	}
-	meal_refresh(philo);
 	write_with_thread(philo, "is eating");
+	meal_refresh(philo);
 	if (timer(philo->rules->time_to_eat, philo))
 		return (1);
 	return (0);
@@ -232,7 +223,9 @@ void	*process_simulation(void *param)
 	t_philo_data	*philo;
 
 	philo = (t_philo_data *)param;
-	meal_refresh(philo);
+	mutexlock(philo, &philo->rules->meal_lock);
+	philo->time_since_last_meal = get_current_time();
+	mutexunlock(philo, &philo->rules->meal_lock);
 	if (philo->philo_id % 2 == 0)
 	{
 		write_with_thread(philo, "is thinking");

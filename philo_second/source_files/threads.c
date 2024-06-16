@@ -6,7 +6,7 @@
 /*   By: tvalimak <tvalimak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 16:56:53 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/16 18:55:37 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/17 00:26:59 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,65 +63,87 @@ int	check_if_fed(t_rules *rules, int number_of_meals)
 	return (1);
 }
 
+int		set_death(t_rules *rules, int i)
+{
+	rules->philo_died = 1;
+	write_with_thread(&rules->philo_data[i], "died");
+	rules->write_lock_locked = 1;
+	pthread_mutex_unlock(&rules->monitor);
+	pthread_mutex_unlock(&rules->meal_lock);
+	return (1);
+}
+
+int		philo_died(t_rules *rules)
+{
+	int	i;
+
+	i = 0;
+	while (i < rules->philo_count)
+	{
+		pthread_mutex_lock(&rules->meal_lock);
+		if (rules->philo_data[i].time_since_last_meal + rules->time_to_die
+			< get_current_time())
+		{
+			pthread_mutex_unlock(&rules->meal_lock);
+			pthread_mutex_lock(&rules->monitor);
+			if (rules->philo_died == 0)
+				set_death(rules, i);
+			pthread_mutex_unlock(&rules->monitor);
+			return (1);
+		}
+		pthread_mutex_unlock(&rules->meal_lock);
+		i++;
+	}
+	return (0);
+}
+
+int		set_fed(t_rules *rules)
+{
+	rules->all_fed = 1;
+	rules->write_lock_locked = 1;
+	pthread_mutex_unlock(&rules->write_lock);
+	pthread_mutex_unlock(&rules->monitor);
+	return (1);
+}
+
+int		all_fed(t_rules *rules)
+{
+	int	i;
+
+	i = 0;
+	while (i < rules->philo_count)
+	{
+		pthread_mutex_lock(&rules->meal_lock);
+		if (rules->philo_data[i].meals_eaten < rules->number_of_meals)
+		{
+			pthread_mutex_unlock(&rules->meal_lock);
+			return (0);
+		}
+		pthread_mutex_unlock(&rules->meal_lock);
+		i++;
+	}
+	pthread_mutex_lock(&rules->write_lock);
+	pthread_mutex_lock(&rules->monitor);
+	if (rules->all_fed == 0)
+		return (set_fed(rules));
+	pthread_mutex_unlock(&rules->write_lock);
+	pthread_mutex_unlock(&rules->monitor);
+	return (1);
+}
+
 void	monitor_threads(void *param)
 {
 	t_rules	*rules;
-	int		i;
 
 	rules = (t_rules *)param;
 	while (1)
 	{
-		pthread_mutex_lock(&rules->monitor);
-		if (rules->philo_died == 1)
-		{
-			pthread_mutex_unlock(&rules->monitor);
+		if (philo_died(rules) == 1)
 			break ;
-		}
-		if (rules->all_fed == 1)
-		{
-			pthread_mutex_unlock(&rules->monitor);
-			break ;
-		}
-		pthread_mutex_unlock(&rules->monitor);
-		i = 0;
-		while (i < rules->philo_count)
-		{
-			pthread_mutex_lock(&rules->meal_lock);
-			pthread_mutex_lock(&rules->monitor);
-			if (rules->philo_died == 1)
-			{
-				pthread_mutex_unlock(&rules->meal_lock);
-				pthread_mutex_unlock(&rules->monitor);
-				break ;
-			}
-			if (rules->philo_data[i].time_since_last_meal + rules->time_to_die
-				< get_current_time())
-			{
-				write_with_thread(&rules->philo_data[i], "died");
-				pthread_mutex_unlock(&rules->meal_lock);
-				pthread_mutex_unlock(&rules->monitor);
-				break ;
-			}
-			pthread_mutex_unlock(&rules->meal_lock);
-			pthread_mutex_unlock(&rules->monitor);
-			i++;
-		}
 		if (rules->number_of_meals != -1)
 		{
-			if (check_if_fed(rules, rules->number_of_meals))
-			{
-				pthread_mutex_lock(&rules->meal_lock);
-				pthread_mutex_lock(&rules->write_lock);
-				pthread_mutex_lock(&rules->monitor);
-				printf("All philosophers have eaten %d meals\n", \
-				rules->number_of_meals);
-				rules->all_fed = 1;
-				rules->write_lock_locked = 1;
-				pthread_mutex_unlock(&rules->meal_lock);
-				pthread_mutex_unlock(&rules->write_lock);
-				pthread_mutex_unlock(&rules->monitor);
+			if (all_fed(rules) == 1)
 				break ;
-			}
 		}
 	}
 	while(rules->threads_running)
