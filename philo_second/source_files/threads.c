@@ -6,7 +6,7 @@
 /*   By: tvalimak <tvalimak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 16:56:53 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/16 16:54:38 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/16 18:55:37 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ void	join_threads(t_rules *rules)
 	int	i;
 
 	i = 0;
-	printf("joining threads\n");
 	while (i < rules->threads_running)
 	{
 		if (pthread_join(rules->thread_id[i], NULL) != 0)
@@ -69,12 +68,16 @@ void	monitor_threads(void *param)
 	t_rules	*rules;
 	int		i;
 
-	printf("Monitoring threads\n");
 	rules = (t_rules *)param;
 	while (1)
 	{
 		pthread_mutex_lock(&rules->monitor);
 		if (rules->philo_died == 1)
+		{
+			pthread_mutex_unlock(&rules->monitor);
+			break ;
+		}
+		if (rules->all_fed == 1)
 		{
 			pthread_mutex_unlock(&rules->monitor);
 			break ;
@@ -95,8 +98,6 @@ void	monitor_threads(void *param)
 				< get_current_time())
 			{
 				write_with_thread(&rules->philo_data[i], "died");
-				rules->philo_died = 1;
-				lay_forks(&rules->philo_data[i]);
 				pthread_mutex_unlock(&rules->meal_lock);
 				pthread_mutex_unlock(&rules->monitor);
 				break ;
@@ -111,16 +112,19 @@ void	monitor_threads(void *param)
 			{
 				pthread_mutex_lock(&rules->meal_lock);
 				pthread_mutex_lock(&rules->write_lock);
+				pthread_mutex_lock(&rules->monitor);
 				printf("All philosophers have eaten %d meals\n", \
 				rules->number_of_meals);
+				rules->all_fed = 1;
+				rules->write_lock_locked = 1;
 				pthread_mutex_unlock(&rules->meal_lock);
 				pthread_mutex_unlock(&rules->write_lock);
+				pthread_mutex_unlock(&rules->monitor);
+				break ;
 			}
 		}
 	}
 	while(rules->threads_running)
 		usleep(100);
-	
 	join_threads(rules);
-	printf("end of monitoring");
 }

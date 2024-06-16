@@ -6,7 +6,7 @@
 /*   By: tvalimak <tvalimak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 21:41:07 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/15 16:09:46 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/16 18:55:58 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,8 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	rules = (t_rules *)malloc(sizeof(t_rules));
+	if (!rules)
+		return (1);
 	ft_memset(rules, 0, sizeof(t_rules));
 	if (!rules)
 	{
@@ -108,6 +110,6 @@ int	main(int argc, char **argv)
 	init_vars(rules);
 	spawn_threads(rules);
 	monitor_threads(rules);
-	printf("Simulation end\n");
+	free (rules);
 	return (0);
 }

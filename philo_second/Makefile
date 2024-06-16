@@ -6,14 +6,14 @@
 #    By: tvalimak <tvalimak@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/27 11:09:42 by tvalimak          #+#    #+#              #
-#    Updated: 2024/06/15 12:26:21 by tvalimak         ###   ########.fr        #
+#    Updated: 2024/06/16 17:50:08 by tvalimak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 CC = gcc
-CFLAGS = -g -Wall -Wextra -Werror
-SANITIZE = -fsanitize=thread
+CFLAGS = -Wall -Wextra -Werror
+SANITIZE = -fsanitize=thread -lpthread
 SRCDIR = source_files
 OBJDIR = object_files
 LIBFTDIR = libft

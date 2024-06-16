@@ -6,7 +6,7 @@
 /*   By: tvalimak <tvalimak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 00:36:15 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/16 16:51:49 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/16 17:47:50 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # include <sys/time.h>
 # include "../libft/libft.h"
 
-typedef struct s_rules	t_rules;
+typedef struct s_rules t_rules;
 
 typedef struct s_philo_data
 {

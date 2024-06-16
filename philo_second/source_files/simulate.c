@@ -6,7 +6,7 @@
 /*   By: tvalimak <tvalimak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/01 12:33:50 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/16 16:54:05 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/16 18:53:08 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,11 @@ void	write_with_thread(t_philo_data *philo, char *message)
 	}
 	printf("%ld %d %s\n", (current_time - philo->time_since_start), \
 	philo->philo_id + 1, message);
-	if (ft_strncmp(message, "died 3", ft_strlen(message)) == 0)
+	if (ft_strncmp(message, "died", ft_strlen(message)) == 0)
 	{
+		philo->rules->philo_died = 1;
 		philo->rules->write_lock_locked = 1;
+		usleep(500);
 		mutexunlock(philo, &philo->rules->write_lock);
 		return ;
 	}
@@ -208,7 +210,11 @@ int	wait_forks(t_philo_data *philo)
 
 int	eat_loop(t_philo_data *philo)
 {
-	printf("in eat loop with philo id %d\n", philo->philo_id + 1);
+	if (philo->rules->all_fed == 1)
+	{
+		lay_forks(philo);
+		return (1);
+	}
 	if (wait_forks(philo))
 	{
 		lay_forks(philo);
@@ -245,6 +251,5 @@ void	*process_simulation(void *param)
 	}
 	lay_forks(philo);
 	philo->rules->threads_running--;
-	printf("End for philo %d\n", philo->philo_id);
 	return (NULL);
 }
