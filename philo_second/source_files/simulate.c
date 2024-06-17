@@ -6,7 +6,7 @@
 /*   By: tvalimak <tvalimak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/01 12:33:50 by tvalimak          #+#    #+#             */
-/*   Updated: 2024/06/17 00:35:55 by tvalimak         ###   ########.fr       */
+/*   Updated: 2024/06/17 14:37:33 by tvalimak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ void	write_with_thread(t_philo_data *philo, char *message)
 	{
 		philo->rules->philo_died = 1;
 		philo->rules->write_lock_locked = 1;
-		usleep(500);
 		mutexunlock(philo, &philo->rules->write_lock);
 		return ;
 	}
@@ -155,7 +154,10 @@ int	forks_taken(t_philo_data *philo)
 {
 	mutexlock(philo, &philo->rules->fork_lock);
 	if (philo->has_left == 1 && philo->has_right == 1)
+	{
+		mutexunlock(philo, &philo->rules->fork_lock);
 		return (1);
+	}
 	mutexunlock(philo, &philo->rules->fork_lock);
 	return (0);
 }
@@ -173,7 +175,7 @@ int take_forks(t_philo_data *philo)
 			{
 				if (odd_forks(philo))
 					return (1);
-				usleep(100);
+				//usleep(100);
 			}
 		}
 	}
@@ -187,14 +189,14 @@ int	wait_forks(t_philo_data *philo)
 	if (philo->left_fork == philo->right_fork)
 	{
 		write_with_thread(philo, "has taken a fork");
-		if (timer(philo->rules->time_to_die + 100, philo))
+		if (timer(philo->rules->time_to_die, philo))
 			return (1);
 	}
 	while (!check_death(philo->rules))
 	{
 		if (take_forks(philo))
 			break ;
-		usleep(100);
+		//usleep(100);
 	}
 	return (check_death(philo->rules));
 }
@@ -223,13 +225,11 @@ void	*process_simulation(void *param)
 	t_philo_data	*philo;
 
 	philo = (t_philo_data *)param;
-	mutexlock(philo, &philo->rules->meal_lock);
 	philo->time_since_last_meal = get_current_time();
-	mutexunlock(philo, &philo->rules->meal_lock);
-	if (philo->philo_id % 2 == 0)
+	if ((philo->philo_id + 1 ) % 2 == 0)
 	{
 		write_with_thread(philo, "is thinking");
-		if (timer(philo->rules->time_to_eat - 5, philo))
+		if (timer(philo->rules->time_to_eat, philo))
 			write_with_thread(philo, "died 1");
 	}
 	while (!check_death(philo->rules))
